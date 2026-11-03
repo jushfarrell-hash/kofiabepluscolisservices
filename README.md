@@ -61,7 +61,7 @@ Ne réutilisez pas le mot de passe local en production.
 
 ## Hébergement sur Render
 
-Le fichier `render.yaml` configure le service Node.js avec un disque persistant pour SQLite et les sessions. Le disque persistant Render peut être payant.
+Le fichier `render.yaml` configure le palier gratuit Render, sans disque persistant. L’adresse du service reste stable, mais Render met le service en veille après une période d’inactivité. Les fichiers SQLite et les sessions sont éphémères : les données peuvent être perdues lors d’un redémarrage ou redéploiement. Ce mode convient aux essais, pas à l’exploitation réelle.
 
 1. Dans Render, choisissez **New +** puis **Blueprint**.
 2. Connectez le dépôt `jushfarrell-hash/kofiabepluscolisservices` et sélectionnez la branche `main`.
@@ -75,7 +75,6 @@ En production, les comptes et colis de démonstration ne sont pas créés. Le pr
 GitHub héberge ici le code source; il ne démarre pas l'application. Pour publier les prochains changements depuis un dépôt déjà configuré :
 
 ```bash
-git add .
 git add .
 git commit -m "Décrire les changements"
 git push origin main

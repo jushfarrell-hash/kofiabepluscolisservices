@@ -54,10 +54,21 @@ Puis ouvrez : http://localhost:3000
 
 ## Identifiants par défaut
 
-- Email : admin@colis.mg
-- Mot de passe : admin123
+- En local : `admin@colis.mg` / `admin123`
+- En production : `admin@colis.mg` et le mot de passe configuré dans la variable `ADMIN_PASSWORD`
 
-Changez ce mot de passe dès la première connexion et avant toute mise en ligne publique.
+Ne réutilisez pas le mot de passe local en production.
+
+## Hébergement sur Render
+
+Le fichier `render.yaml` configure le service Node.js avec un disque persistant pour SQLite et les sessions. Le disque persistant Render peut être payant.
+
+1. Dans Render, choisissez **New +** puis **Blueprint**.
+2. Connectez le dépôt `jushfarrell-hash/kofiabepluscolisservices` et sélectionnez la branche `main`.
+3. Lors de la configuration, définissez `ADMIN_PASSWORD` avec un mot de passe fort. `SESSION_SECRET` est généré automatiquement.
+4. Lancez le déploiement et ouvrez l’URL fournie par Render.
+
+En production, les comptes et colis de démonstration ne sont pas créés. Le premier compte admin est initialisé avec `ADMIN_PASSWORD`.
 
 ## Publier le code sur GitHub
 

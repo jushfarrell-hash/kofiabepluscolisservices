@@ -1,14 +1,26 @@
 const express = require('express');
 const session = require('express-session');
+const SQLiteStore = require('connect-sqlite3')(session);
 const bcrypt = require('bcryptjs');
 const sqlite3 = require('sqlite3').verbose();
+const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === 'production';
 const dbPath = path.join(__dirname, 'data', 'colis.db');
+const sessionSecret = process.env.SESSION_SECRET || (isProduction ? null : 'colis-service-secret-key');
+
+if (isProduction && (!sessionSecret || !process.env.ADMIN_PASSWORD)) {
+  throw new Error('SESSION_SECRET and ADMIN_PASSWORD must be configured in production.');
+}
+
+fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 const db = new sqlite3.Database(dbPath);
+
+if (isProduction) app.set('trust proxy', 1);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -17,10 +29,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   session({
-    secret: 'colis-service-secret-key',
+    store: new SQLiteStore({ db: 'sessions.sqlite', dir: path.dirname(dbPath) }),
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { httpOnly: true, maxAge: 60 * 60 * 1000 }
+    cookie: { httpOnly: true, secure: isProduction, maxAge: 60 * 60 * 1000 }
   })
 );
 
@@ -232,20 +245,22 @@ function initDatabase() {
 
     db.get('SELECT COUNT(*) as count FROM users', async (err, row) => {
       if (!err && row && row.count === 0) {
-        const passwordHash = await bcrypt.hash('admin123', 10);
+        const passwordHash = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 10);
         db.run(
           'INSERT INTO users (name, email, phone, password, role, agency_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
           ['Admin général', 'admin@colis.mg', '+261 34 000 00', passwordHash, 'ADMIN', 1, 'ACTIVE']
         );
-        db.run(
-          'INSERT INTO users (name, email, phone, password, role, agency_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
-          ['Agent Antananarivo', 'agent@colis.mg', '+261 34 111 11', await bcrypt.hash('agent123', 10), 'AGENT', 1, 'ACTIVE']
-        );
+        if (!isProduction) {
+          db.run(
+            'INSERT INTO users (name, email, phone, password, role, agency_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            ['Agent Antananarivo', 'agent@colis.mg', '+261 34 111 11', await bcrypt.hash('agent123', 10), 'AGENT', 1, 'ACTIVE']
+          );
+        }
       }
     });
 
     db.get('SELECT COUNT(*) as count FROM shipments', (err, row) => {
-      if (!err && row && row.count === 0) {
+      if (!isProduction && !err && row && row.count === 0) {
         const tracking1 = buildTrackingCode();
         const tracking2 = buildTrackingCode();
         const now = new Date().toISOString();

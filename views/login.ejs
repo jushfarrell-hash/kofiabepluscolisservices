@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="brand">
+        <span class="brand-main">KOFIABE</span>
+        <span class="brand-sub">COLIS SERVICES</span>
+      </div>
+      <div class="nav-links">
+        <a href="/tracking">Suivi public</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="card auth-box">
+      <h1>Connexion</h1>
+
+      <% if (error) { %>
+        <div class="alert error"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="/login">
+        <div class="mt-2">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="admin@colis.mg" required>
+        </div>
+
+        <div class="mt-2">
+          <label for="password">Mot de passe</label>
+          <input id="password" name="password" type="password" placeholder="••••••••" required>
+        </div>
+
+        <div class="mt-4">
+          <button type="submit">Se connecter</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

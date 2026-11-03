@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="brand">
+        <span class="brand-main">KOFIABE</span>
+        <span class="brand-sub">COLIS SERVICES</span>
+      </div>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/agencies">Agences</a>
+        <a class="active" href="/shipments">Colis</a>
+        <a href="/users">Comptes</a>
+        <a href="/payments">Paiements</a>
+        <a href="/tracking">Suivi</a>
+        <a href="/logout">Déconnexion</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>Gestion des colis</h1>
+    </div>
+
+    <div class="card">
+      <h2>Enregistrer un colis</h2>
+      <form method="POST" action="/shipments">
+        <div class="form-grid">
+          <div>
+            <label>Expéditeur</label>
+            <input name="sender_name" required>
+          </div>
+          <div>
+            <label>Téléphone expéditeur</label>
+            <input name="sender_phone">
+          </div>
+          <div>
+            <label>Adresse expéditeur</label>
+            <input name="sender_address">
+          </div>
+          <div>
+            <label>Destinataire</label>
+            <input name="recipient_name" required>
+          </div>
+          <div>
+            <label>Téléphone destinataire</label>
+            <input name="recipient_phone">
+          </div>
+          <div>
+            <label>Ville destination</label>
+            <select name="recipient_city" required>
+              <% cities.forEach((city) => { %>
+                <option value="<%= city.name %>"><%= city.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div>
+            <label>Adresse destinataire</label>
+            <input name="recipient_address">
+          </div>
+          <div>
+            <label>Poids (kg)</label>
+            <input type="number" step="0.1" name="weight" required>
+          </div>
+          <div>
+            <label>Longueur (cm)</label>
+            <input type="number" step="0.1" name="length" value="30">
+          </div>
+          <div>
+            <label>Largeur (cm)</label>
+            <input type="number" step="0.1" name="width" value="20">
+          </div>
+          <div>
+            <label>Hauteur (cm)</label>
+            <input type="number" step="0.1" name="height" value="15">
+          </div>
+          <div>
+            <label>Service</label>
+            <select name="service">
+              <option>STANDARD</option>
+              <option>EXPRESS</option>
+              <option>VIP</option>
+            </select>
+          </div>
+          <div>
+            <label>Ville de départ</label>
+            <select name="from_city" required>
+              <% cities.forEach((city) => { %>
+                <option value="<%= city.name %>"><%= city.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div>
+            <label>Ville d’arrivée</label>
+            <select name="to_city" required>
+              <% cities.forEach((city) => { %>
+                <option value="<%= city.name %>"><%= city.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div>
+            <label>Agence</label>
+            <select name="agency_id">
+              <% agencies.forEach((agency) => { %>
+                <option value="<%= agency.id %>"><%= agency.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div>
+            <label>Description</label>
+            <input name="description">
+          </div>
+        </div>
+        <div class="mt-2">
+          <button type="submit">Créer le colis</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="mt-4 card">
+      <h2>Liste des colis</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Trajet</th>
+              <th>Montant</th>
+              <th>Payé</th>
+              <th>Statut</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% shipments.forEach((shipment) => { %>
+              <tr>
+                <td><%= shipment.tracking_code %></td>
+                <td><%= shipment.from_city %> → <%= shipment.to_city %></td>
+                <td><%= Number(shipment.amount || 0).toLocaleString('fr-FR') %> Ar</td>
+                <td><%= Number(shipment.paid_amount || 0).toLocaleString('fr-FR') %> Ar</td>
+                <td><span class="status-pill"><%= shipment.status %></span></td>
+                <td><%= new Date(shipment.created_at).toLocaleDateString('fr-FR') %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

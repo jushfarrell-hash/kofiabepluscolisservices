@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="brand">
+        <span class="brand-main">KOFIABE</span>
+        <span class="brand-sub">COLIS SERVICES</span>
+      </div>
+      <div class="nav-links">
+        <% if (user) { %>
+          <a href="/dashboard">Dashboard</a>
+          <a href="/users">Comptes</a>
+          <a href="/logout">Déconnexion</a>
+        <% } else { %>
+          <a href="/login">Connexion</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>Suivi public</h1>
+    </div>
+
+    <div class="card">
+      <form method="POST" action="/tracking">
+        <div class="form-grid">
+          <div>
+            <label>Code de suivi</label>
+            <input name="code" placeholder="CS-XXXXXXXX" required>
+          </div>
+        </div>
+        <div class="mt-2">
+          <button type="submit">Rechercher</button>
+        </div>
+      </form>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert error mt-4"><%= error %></div>
+    <% } %>
+
+    <% if (result) { %>
+      <div class="mt-4 card">
+        <h2>Colis <%= result.tracking_code %></h2>
+        <p><strong>Trajet :</strong> <%= result.from_city %> → <%= result.to_city %></p>
+        <p><strong>Statut actuel :</strong> <span class="status-pill"><%= result.status %></span></p>
+        <p><strong>Montant :</strong> <%= Number(result.amount || 0).toLocaleString('fr-FR') %> Ar</p>
+
+        <h3>Historique</h3>
+        <ul>
+          <% (result.events || []).forEach((event) => { %>
+            <li><strong><%= new Date(event.created_at).toLocaleString('fr-FR') %> :</strong> <%= event.status %> — <%= event.note || 'Aucune note' %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
+  </main>
+</body>
+</html>

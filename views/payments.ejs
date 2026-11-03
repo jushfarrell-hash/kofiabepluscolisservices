@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="brand">
+        <span class="brand-main">KOFIABE</span>
+        <span class="brand-sub">COLIS SERVICES</span>
+      </div>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/agencies">Agences</a>
+        <a href="/shipments">Colis</a>
+        <a href="/users">Comptes</a>
+        <a class="active" href="/payments">Paiements</a>
+        <a href="/tracking">Suivi</a>
+        <a href="/logout">Déconnexion</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>Paiements</h1>
+    </div>
+
+    <div class="card">
+      <h2>Enregistrer un paiement</h2>
+      <form method="POST" action="/payments">
+        <div class="form-grid">
+          <div>
+            <label>Colis</label>
+            <select name="shipment_id" required>
+              <% shipments.forEach((shipment) => { %>
+                <option value="<%= shipment.id %>"><%= shipment.tracking_code %> — <%= shipment.recipient_name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div>
+            <label>Montant</label>
+            <input type="number" step="100" name="amount" required>
+          </div>
+          <div>
+            <label>Moyen</label>
+            <select name="method">
+              <option>ESPECE</option>
+              <option>MVOLA</option>
+              <option>AIRTEL</option>
+              <option>CARTE</option>
+            </select>
+          </div>
+          <div>
+            <label>Référence</label>
+            <input name="reference" placeholder="PAY-XXXX">
+          </div>
+        </div>
+        <div class="mt-2">
+          <button type="submit">Valider le paiement</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="mt-4 card">
+      <h2>Historique des paiements</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Colis</th>
+              <th>Montant</th>
+              <th>Moyen</th>
+              <th>Référence</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% payments.forEach((payment) => { %>
+              <tr>
+                <td><%= payment.tracking_code || payment.shipment_id %></td>
+                <td><%= Number(payment.amount || 0).toLocaleString('fr-FR') %> Ar</td>
+                <td><%= payment.method %></td>
+                <td><%= payment.reference %></td>
+                <td><%= new Date(payment.created_at).toLocaleDateString('fr-FR') %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

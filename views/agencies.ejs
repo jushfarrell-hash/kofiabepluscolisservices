@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="brand">
+        <span class="brand-main">KOFIABE</span>
+        <span class="brand-sub">COLIS SERVICES</span>
+      </div>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a class="active" href="/agencies">Agences</a>
+        <a href="/shipments">Colis</a>
+        <a href="/users">Comptes</a>
+        <a href="/payments">Paiements</a>
+        <a href="/tracking">Suivi</a>
+        <a href="/logout">Déconnexion</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>Gestion des agences</h1>
+    </div>
+
+    <div class="card">
+      <h2>Créer une agence</h2>
+      <form method="POST" action="/agencies">
+        <div class="form-grid">
+          <div>
+            <label>Nom</label>
+            <input name="name" required>
+          </div>
+          <div>
+            <label>Ville</label>
+            <input name="city" required>
+          </div>
+          <div>
+            <label>Adresse</label>
+            <input name="address" required>
+          </div>
+          <div>
+            <label>Téléphone</label>
+            <input name="phone">
+          </div>
+        </div>
+        <div class="mt-2">
+          <button type="submit">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="mt-4 card">
+      <h2>Liste des agences</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Nom</th>
+              <th>Ville</th>
+              <th>Adresse</th>
+              <th>Téléphone</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% agencies.forEach((agency) => { %>
+              <tr>
+                <td><%= agency.code %></td>
+                <td><%= agency.name %></td>
+                <td><%= agency.city %></td>
+                <td><%= agency.address %></td>
+                <td><%= agency.phone || '—' %></td>
+                <td><span class="status-pill"><%= agency.status %></span></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="brand">
+        <span class="brand-main">KOFIABE</span>
+        <span class="brand-sub">COLIS SERVICES</span>
+      </div>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/agencies">Agences</a>
+        <a href="/shipments">Colis</a>
+        <a class="active" href="/users">Comptes</a>
+        <a href="/payments">Paiements</a>
+        <a href="/tracking">Suivi</a>
+        <a href="/logout">Déconnexion</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>Comptes utilisateurs</h1>
+    </div>
+
+    <div class="card">
+      <h2>Créer un compte</h2>
+      <form method="POST" action="/users">
+        <div class="form-grid">
+          <div>
+            <label>Nom complet</label>
+            <input name="name" required>
+          </div>
+          <div>
+            <label>Email</label>
+            <input type="email" name="email" required>
+          </div>
+          <div>
+            <label>Téléphone</label>
+            <input name="phone">
+          </div>
+          <div>
+            <label>Rôle</label>
+            <select name="role" required>
+              <option value="ADMIN">ADMIN</option>
+              <option value="RESPONSABLE">RESPONSABLE</option>
+              <option value="AGENT">AGENT</option>
+              <option value="LIVREUR">LIVREUR</option>
+            </select>
+          </div>
+          <div>
+            <label>Agence</label>
+            <select name="agency_id">
+              <% agencies.forEach((agency) => { %>
+                <option value="<%= agency.id %>"><%= agency.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div>
+            <label>Mot de passe</label>
+            <input type="password" name="password" required>
+          </div>
+        </div>
+        <div class="mt-2">
+          <button type="submit">Créer le compte</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="mt-4 card">
+      <h2>Liste des comptes</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Agence</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% users.forEach((userEntry) => { %>
+              <tr>
+                <td><%= userEntry.name %></td>
+                <td><%= userEntry.email %></td>
+                <td><%= userEntry.role %></td>
+                <td><%= userEntry.agency_name || '—' %></td>
+                <td><span class="status-pill"><%= userEntry.status %></span></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

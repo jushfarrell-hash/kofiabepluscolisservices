@@ -57,16 +57,20 @@ Puis ouvrez : http://localhost:3000
 - Email : admin@colis.mg
 - Mot de passe : admin123
 
-## Déploiement GitHub
+Changez ce mot de passe dès la première connexion et avant toute mise en ligne publique.
+
+## Publier le code sur GitHub
+
+GitHub héberge ici le code source; il ne démarre pas l'application. Pour publier les prochains changements depuis un dépôt déjà configuré :
 
 ```bash
-git init
 git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin <votre_url_github>
-git push -u origin main
+git add .
+git commit -m "Décrire les changements"
+git push origin main
 ```
+
+Le dépôt du projet est https://github.com/jushfarrell-hash/kofiabepluscolisservices. Pour lancer l'application, suivez la section « Démarrage rapide »; un hébergement en ligne nécessite un service de déploiement compatible avec Node.js et une configuration adaptée de la base de données et des secrets.
 
 ## Structure du projet
 
